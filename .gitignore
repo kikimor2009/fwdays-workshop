@@ -22,3 +22,9 @@ override.tf.json
 # Ignore CLI configuration files
 .terraformrc
 terraform.rc
+
+# flux config
+tf-bootstrap/flux-e2e-config
+
+# gitops repo
+fw-non-prod

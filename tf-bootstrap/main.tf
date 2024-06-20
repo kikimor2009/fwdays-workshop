@@ -8,7 +8,7 @@ terraform {
     }
     github = {
       source  = "integrations/github"
-      version = ">= 6.1"
+      version = "< 6.0"
     }
     kind = {
       source  = "tehcyx/kind"
@@ -29,11 +29,13 @@ resource "kind_cluster" "this" {
 # Initialise a Github project
 # ==========================================
 
-resource "github_repository" "this" {
-  name        = var.github_repository
-  description = var.github_repository
-  visibility  = "private"
-  auto_init   = true # This is extremely important as flux_bootstrap_git will not work without a repository that has been initialised
+module "github_repository" {
+  source  = "mineiros-io/repository/github"
+  version = "~> 0.18.0"
+
+  name               = var.github_repository
+  description        = var.github_repository
+  visibility         = "public"
 }
 
 # ==========================================
@@ -41,7 +43,7 @@ resource "github_repository" "this" {
 # ==========================================
 
 resource "flux_bootstrap_git" "this" {
-  depends_on = [github_repository.this]
+  depends_on = [ module.github_repository ]
 
   embedded_manifests = true
   path               = "clusters/my-cluster"
